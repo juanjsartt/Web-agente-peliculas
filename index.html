@@ -162,25 +162,28 @@ body{
 }
 
 .suggestions-container{
-        background:#f8fafc;
-        border-bottom:1px solid #e2e8f0;
-        padding:12px;
-    }
-    
+    background:#f8fafc;
+    border-bottom:1px solid #e2e8f0;
+    padding:15px;
+}
+
 .suggestions{
     display:flex;
-    gap:8px;
+    justify-content:center;
+    align-items:center;
     flex-wrap:wrap;
+    gap:10px;
 }
 
 .chip{
     background:white;
     border:1px solid #cbd5e1;
-    border-radius:20px;
-    padding:8px 14px;
+    border-radius:999px;
+    padding:10px 16px;
     cursor:pointer;
     transition:.2s;
     font-size:14px;
+    font-weight:500;
 }
 
 .chip:hover{
@@ -267,7 +270,13 @@ body{
     </div>
 
     <div class="suggestions-container">
+
+        <p style="text-align:center; margin-bottom:10px; color:#64748b;">
+            💡 Sugerencias para empezar
+        </p>
+    
         <div id="suggestions" class="suggestions"></div>
+
     </div>
     
     <div id="chatBox" class="chat-box"></div>
@@ -603,6 +612,13 @@ window.onload = () => {
 
     actualizarSesion();
 
+    renderizarSugerencias();
+
+    setInterval(
+        renderizarSugerencias,
+        15000
+    );
+
     agregarMensaje(
         "👋 ¡Hola! Soy tu asistente de recomendaciones de películas.",
         "bot"
@@ -616,8 +632,7 @@ window.onload = () => {
         );
 
     }
-
-    renderizarSugerencias();
+    
 };
 
 </script>
