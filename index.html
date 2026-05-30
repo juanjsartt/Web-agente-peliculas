@@ -3,9 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Agente Recomendador de Películas</title>
+
+<title>🎬 Agente Recomendador de Películas</title>
 
 <style>
+
 *{
     margin:0;
     padding:0;
@@ -20,7 +22,7 @@ body{
 
 .chat-container{
     width:100%;
-    max-width:900px;
+    max-width:1000px;
     height:100vh;
     margin:auto;
     background:white;
@@ -51,6 +53,59 @@ body{
     cursor:pointer;
 }
 
+.clear-btn:hover{
+    opacity:.9;
+}
+
+.session-panel{
+    background:#e2e8f0;
+    padding:12px;
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:space-between;
+    align-items:center;
+    gap:12px;
+}
+
+.session-info{
+    font-size:14px;
+}
+
+.session-id{
+    font-weight:bold;
+    color:#2563eb;
+}
+
+.memory{
+    color:#475569;
+}
+
+.session-actions{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+}
+
+.session-actions input{
+    padding:8px;
+    border:1px solid #cbd5e1;
+    border-radius:6px;
+    min-width:250px;
+}
+
+.session-actions button{
+    border:none;
+    padding:8px 12px;
+    border-radius:6px;
+    cursor:pointer;
+    background:#334155;
+    color:white;
+}
+
+.session-actions button:hover{
+    opacity:.9;
+}
+
 .chat-box{
     flex:1;
     overflow-y:auto;
@@ -63,8 +118,8 @@ body{
     padding:12px 15px;
     border-radius:12px;
     max-width:80%;
-    white-space:pre-wrap;
     line-height:1.5;
+    white-space:pre-wrap;
 }
 
 .user{
@@ -108,15 +163,26 @@ body{
 
 @media(max-width:768px){
 
-    .message{
-        max-width:90%;
+    .session-panel{
+        flex-direction:column;
+        align-items:flex-start;
     }
 
-    .header h2{
-        font-size:16px;
+    .session-actions{
+        width:100%;
+    }
+
+    .session-actions input{
+        width:100%;
+        min-width:auto;
+    }
+
+    .message{
+        max-width:95%;
     }
 
 }
+
 </style>
 </head>
 
@@ -125,37 +191,95 @@ body{
 <div class="chat-container">
 
     <div class="header">
-        <h2>🎬 Recomendador de Películas</h2>
-        <button class="clear-btn" onclick="limpiarConversacion()">
+        <h2>🎬 Agente Recomendador de Películas</h2>
+
+        <button
+            class="clear-btn"
+            onclick="limpiarConversacion()">
             Nueva conversación
         </button>
+    </div>
+
+    <div class="session-panel">
+
+        <div class="session-info">
+
+            <div>
+                Sesión:
+                <span
+                    id="sessionDisplay"
+                    class="session-id">
+                    Sin iniciar
+                </span>
+            </div>
+
+            <div class="memory">
+                Mensajes en memoria:
+                <span id="memoryCount">0</span>
+            </div>
+
+        </div>
+
+        <div class="session-actions">
+
+            <button onclick="copiarSesion()">
+                Copiar ID
+            </button>
+
+            <input
+                id="sessionInput"
+                type="text"
+                placeholder="Pegar Session ID existente">
+
+            <button onclick="cargarSesion()">
+                Continuar Chat
+            </button>
+
+        </div>
+
     </div>
 
     <div id="chatBox" class="chat-box"></div>
 
     <div class="input-area">
+
         <input
             id="mensaje"
             type="text"
             placeholder="Escribe tu mensaje..."
-            onkeypress="if(event.key==='Enter') enviarMensaje()"
-        >
-        <button onclick="enviarMensaje()">Enviar</button>
+            onkeypress="if(event.key==='Enter') enviarMensaje()">
+
+        <button onclick="enviarMensaje()">
+            Enviar
+        </button>
+
     </div>
 
 </div>
 
 <script>
 
-const API_URL = "https://agente-peliculas-pkve.onrender.com";
+const API_URL =
+    "https://agente-peliculas-pkve.onrender.com";
 
-let sessionId = localStorage.getItem("session_id") || "";
+let sessionId =
+    localStorage.getItem("session_id") || "";
 
-const chatBox = document.getElementById("chatBox");
+const chatBox =
+    document.getElementById("chatBox");
 
-function agregarMensaje(texto, tipo){
+function actualizarSesion(){
 
-    const div = document.createElement("div");
+    document.getElementById(
+        "sessionDisplay"
+    ).textContent =
+        sessionId || "Sin iniciar";
+}
+
+function agregarMensaje(texto,tipo){
+
+    const div =
+        document.createElement("div");
 
     div.classList.add("message");
     div.classList.add(tipo);
@@ -164,28 +288,43 @@ function agregarMensaje(texto, tipo){
 
     chatBox.appendChild(div);
 
-    chatBox.scrollTop = chatBox.scrollHeight;
+    chatBox.scrollTop =
+        chatBox.scrollHeight;
 }
 
 async function enviarMensaje(){
 
-    const input = document.getElementById("mensaje");
+    const input =
+        document.getElementById(
+            "mensaje"
+        );
 
-    const mensaje = input.value.trim();
+    const mensaje =
+        input.value.trim();
 
     if(!mensaje) return;
 
-    agregarMensaje(mensaje,"user");
+    agregarMensaje(
+        mensaje,
+        "user"
+    );
 
-    input.value="";
+    input.value = "";
 
-    const loading = document.createElement("div");
-    loading.className = "message bot";
+    const loading =
+        document.createElement("div");
+
     loading.id = "loading";
-    loading.textContent = "Escribiendo...";
-    chatBox.appendChild(loading);
 
-    chatBox.scrollTop = chatBox.scrollHeight;
+    loading.className =
+        "message bot";
+
+    loading.textContent =
+        "🎬 Pensando...";
+
+    chatBox.appendChild(
+        loading
+    );
 
     try{
 
@@ -194,30 +333,46 @@ async function enviarMensaje(){
         };
 
         if(sessionId){
-            payload.session_id = sessionId;
+            payload.session_id =
+                sessionId;
         }
 
-        const response = await fetch(
-            `${API_URL}/consultar`,
-            {
-                method:"POST",
-                headers:{
-                    "Content-Type":"application/json"
-                },
-                body: JSON.stringify(payload)
-            }
-        );
+        const response =
+            await fetch(
+                `${API_URL}/consultar`,
+                {
+                    method:"POST",
+                    headers:{
+                        "Content-Type":
+                        "application/json"
+                    },
+                    body: JSON.stringify(
+                        payload
+                    )
+                }
+            );
 
-        const data = await response.json();
+        const data =
+            await response.json();
 
-        document.getElementById("loading").remove();
+        document.getElementById(
+            "loading"
+        )?.remove();
 
-        sessionId = data.session_id;
+        sessionId =
+            data.session_id;
 
         localStorage.setItem(
             "session_id",
             sessionId
         );
+
+        actualizarSesion();
+
+        document.getElementById(
+            "memoryCount"
+        ).textContent =
+            data.mensajes_en_memoria;
 
         agregarMensaje(
             data.respuesta,
@@ -227,15 +382,69 @@ async function enviarMensaje(){
     }
     catch(error){
 
-        document.getElementById("loading")?.remove();
+        document.getElementById(
+            "loading"
+        )?.remove();
 
         agregarMensaje(
-            "Error conectando con la API.",
+            "❌ Error conectando con la API.",
             "bot"
         );
 
         console.error(error);
     }
+}
+
+function copiarSesion(){
+
+    if(!sessionId){
+
+        alert(
+            "No existe una sesión activa."
+        );
+
+        return;
+    }
+
+    navigator.clipboard.writeText(
+        sessionId
+    );
+
+    alert(
+        "Session ID copiado."
+    );
+}
+
+function cargarSesion(){
+
+    const nuevaSesion =
+        document.getElementById(
+            "sessionInput"
+        ).value.trim();
+
+    if(!nuevaSesion){
+
+        alert(
+            "Ingresa un Session ID."
+        );
+
+        return;
+    }
+
+    sessionId = nuevaSesion;
+
+    localStorage.setItem(
+        "session_id",
+        sessionId
+    );
+
+    actualizarSesion();
+
+    agregarMensaje(
+        `🔄 Sesión cargada:
+${sessionId}`,
+        "bot"
+    );
 }
 
 async function limpiarConversacion(){
@@ -251,32 +460,53 @@ async function limpiarConversacion(){
                 }
             );
 
-        }catch(error){
+        }
+        catch(error){
             console.error(error);
         }
 
     }
 
-    localStorage.removeItem("session_id");
+    localStorage.removeItem(
+        "session_id"
+    );
 
     sessionId = "";
+
+    document.getElementById(
+        "memoryCount"
+    ).textContent = "0";
+
+    actualizarSesion();
 
     chatBox.innerHTML = "";
 
     agregarMensaje(
-        "Conversación reiniciada. ¿Qué tipo de películas te gustan?",
+        "🎬 Conversación reiniciada.\n¿Qué tipo de películas te gustan?",
         "bot"
     );
 }
 
 window.onload = () => {
 
+    actualizarSesion();
+
     agregarMensaje(
-        "¡Hola! 👋 Soy tu asistente de recomendaciones de películas.",
+        "👋 ¡Hola! Soy tu asistente de recomendaciones de películas.",
         "bot"
     );
 
+    if(sessionId){
+
+        agregarMensaje(
+            `💾 Sesión recuperada:\n${sessionId}`,
+            "bot"
+        );
+
+    }
+
 };
+
 </script>
 
 </body>
