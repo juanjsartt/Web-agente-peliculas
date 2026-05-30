@@ -180,7 +180,34 @@ body{
     .message{
         max-width:95%;
     }
-
+    
+    .suggestions-container{
+        background:#f8fafc;
+        border-bottom:1px solid #e2e8f0;
+        padding:12px;
+    }
+    
+    .suggestions{
+        display:flex;
+        gap:8px;
+        flex-wrap:wrap;
+    }
+    
+    .chip{
+        background:white;
+        border:1px solid #cbd5e1;
+        border-radius:20px;
+        padding:8px 14px;
+        cursor:pointer;
+        transition:.2s;
+        font-size:14px;
+    }
+    
+    .chip:hover{
+        background:#2563eb;
+        color:white;
+        border-color:#2563eb;
+    }
 }
 
 </style>
@@ -239,6 +266,10 @@ body{
 
     </div>
 
+    <div class="suggestions-container">
+        <div id="suggestions" class="suggestions"></div>
+    </div>
+    
     <div id="chatBox" class="chat-box"></div>
 
     <div class="input-area">
@@ -268,6 +299,86 @@ let sessionId =
 const chatBox =
     document.getElementById("chatBox");
 
+const sugerencias = [
+    "Ciencia ficción",
+    "Comedia",
+    "Terror",
+    "Romance",
+    "Drama",
+    "Suspenso",
+    "Acción",
+    "Aventura",
+    "Animación",
+    "Fantasía",
+    "Misterio",
+    "Crimen",
+    "Thriller psicológico",
+    "Superhéroes",
+    "Cyberpunk",
+    "Distopías",
+    "Viajes en el tiempo",
+    "Apocalipsis",
+    "Zombies",
+    "Aliens",
+    "Anime",
+    "Basadas en hechos reales",
+    "Ganadoras del Oscar",
+    "Películas familiares",
+    "Películas para llorar",
+    "Películas para reír",
+    "Películas de culto",
+    "Western",
+    "Musicales",
+    "Guerra",
+    "Espionaje",
+    "Detectives",
+    "Vampiros",
+    "Monstruos",
+    "Robots",
+    "IA y tecnología",
+    "Comedias románticas",
+    "Terror sobrenatural"
+];
+
+function renderizarSugerencias(){
+    const container =
+        document.getElementById(
+            "suggestions"
+        );
+
+    container.innerHTML = "";
+
+    const copia =
+        [...sugerencias]
+        .sort(() => Math.random() - 0.5)
+        .slice(0,5);
+
+    copia.forEach(texto => {
+
+        const chip =
+            document.createElement(
+                "button"
+            );
+
+        chip.className = "chip";
+
+        chip.textContent = texto;
+
+        chip.onclick = () => {
+
+            document.getElementById(
+                "mensaje"
+            ).value =
+                `Recomiéndame películas de ${texto}`;
+
+            enviarMensaje();
+        };
+
+        container.appendChild(chip);
+
+    });
+}
+    
 function actualizarSesion(){
 
     document.getElementById(
@@ -379,6 +490,7 @@ async function enviarMensaje(){
             "bot"
         );
 
+        renderizarSugerencias();
     }
     catch(error){
 
@@ -505,6 +617,7 @@ window.onload = () => {
 
     }
 
+    renderizarSugerencias();
 };
 
 </script>
